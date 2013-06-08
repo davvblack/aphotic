@@ -1,85 +1,85 @@
 <!DOCTYPE html>
 <head>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script> 
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 	<script type="text/javascript" src="js/lib/crafty.js"></script>
 </head>
 <body>
 	<script type="text/javascript">
-        
+
         var tile_size = 80;
         var collision_fudge = 10;
-        
+
 		Crafty.init(1000, 800);
 
 		// YOUR GAME CODE
-       
+
         Crafty.scene("loading", function () {
             //load takes an array of assets and a callback when complete
             Crafty.load(["bananabomber-sprites.png"], function () {
                 Crafty.scene("main"); //when everything is loaded, run the main scene
             });
-        
+
             /*
             //black background with some loading text
             Crafty.background("#000");
             Crafty.e("2D, DOM, Text").attr({ w: 100, h: 20, x: 150, y: 120 })
                     .text("Loading")
                     .css({ "text-align": "center" });
-            
-            */ 
+
+            */
         });
-        
-        
+
+
         Crafty.c("LeftControls", {
             init: function() {
                 this.requires('Multiway');
             },
-            
+
             leftControls: function(speed) {
                 this.multiway(speed, {W: -90, S: 90, D: 0, A: 180})
                 return this;
             }
-            
+
         });
-        
+
         Crafty.c("RightControls", {
             init: function() {
                 this.requires('Multiway');
             },
-            
+
             rightControls: function(speed) {
                 this.multiway(speed, {UP_ARROW: -90, DOWN_ARROW: 90, RIGHT_ARROW: 0, LEFT_ARROW: 180})
                 return this;
             }
-            
+
         });
-       
-        
+
+
         Crafty.c('Creature', {
             Creature: function() {
                 //setup animations
                 this.requires("SpriteAnimation, Collision, Grid")
-                .animate("walk_left", 9, 1, 11)
-                .animate("walk_right", 6, 1, 8)
-                .animate("walk_up", 0, 1, 2)
-                .animate("walk_down", 3, 1, 5)
+                .animate("walk_left", 12, 1, 15)
+                .animate("walk_right", 8, 1, 11)
+                .animate("walk_up", 0, 1, 3)
+                .animate("walk_down", 4, 1, 7)
                 .bind("NewDirection",
                     function (direction) {
                         if (direction.x < 0) {
                             if (!this.isPlaying("walk_left"))
-                                this.stop().animate("walk_left", 10, -1);
+                                this.stop().animate("walk_left", 30, -1);
                         }
                         if (direction.x > 0) {
                             if (!this.isPlaying("walk_right"))
-                                this.stop().animate("walk_right", 10, -1);
+                                this.stop().animate("walk_right", 30, -1);
                         }
                         if (direction.y < 0) {
                             if (!this.isPlaying("walk_up"))
-                                this.stop().animate("walk_up", 10, -1);
+                                this.stop().animate("walk_up", 30, -1);
                         }
                         if (direction.y > 0) {
                             if (!this.isPlaying("walk_down"))
-                                this.stop().animate("walk_down", 10, -1);
+                                this.stop().animate("walk_down", 30, -1);
                         }
                         if(!direction.x && !direction.y) {
                             this.stop();
@@ -99,17 +99,17 @@
                 return this;
             }
         });
-                
-                
+
+
         Crafty.scene("main", function () {
             load_level(1);
         });
-        
+
         Crafty.scene("loading");
-        
+
         Crafty.sprite(tile_size, tile_size*2, "assets/map_sprite.png", {
             floor: [0, 0],
-            player: [0, 3],
+            player: [0, 2],
             goal: [0, 1],
             walln: [1, 0],
             walll: [2, 0],
@@ -121,28 +121,28 @@
             player: [0, 3],
             enemy: [0, 3],*/
         });
-        
+
         var tile_types = [ {id: 1, solid: false, name:"floor",   rgba: [255, 255, 255, 255]},
                            {id: 2, solid: true, name:"wall",    rgba: [  0,   0,   0, 255]},
                            {id: 2, solid: false, name:"player",    rgba: [  255,   0,   0, 255]},
                            {id: 2, solid: false, name:"goal",    rgba: [  0,   255,   0, 255]}]
-        
+
         function load_level(level_id) {
-            
+
             $.getJSON("data/levels/" + level_id + "/data.json", function (level_data) {
-                
+
                 var level_x = level_data.map.x;
                 var level_y = level_data.map.y;
                 var map_data = [];
-                
+
                 var img = new Image();
                 img.src = "data/levels/" + level_data.map.img_name;
                 img.onload = function () {
                     var context = document.getElementById('buffer').getContext('2d');
                     context.drawImage(img, 0, 0);
-                    
+
                     data = context.getImageData(0, 0, level_x, level_y).data;
-                    
+
                     for (var i = 0; i < level_x; i++) {
                         map_data[i] = [];
                         for (var j = 0; j < level_y; j++) {
@@ -169,19 +169,19 @@
                                             .attr({ x: i * tile_size, y: j * tile_size, z:1 });
                                     }
                                     */
-                                     
+
                                     matched_any = true;
-                                } 
+                                }
                             }
                             if (!matched_any) {
                                 console.log(data[(i * 4) + (j * 4 * level_x)] , data[(i * 4) + (j * 4 * level_x) +1], data[(i * 4) + (j * 4 * level_x) +2], data[(i * 4) + (j * 4 * level_x) +3])
                             }
                         }
                     }
-                    
+
                     var wall_names = ["walln", "wallr", "walll", "wallb"]
                     var block_name;
-                    
+
                     for (var i = 0; i < level_x; i++) {
                         for (var j = 0; j < level_y; j++) {
                             console.log(i, j, map_data[i][j]);
@@ -199,9 +199,9 @@
                                 } else {
                                     block_name = map_data[i][j].name;
                                 }
-                                
+
                                 console.log(block_name);
-                                
+
                                 Crafty.e("2D, DOM, Collision, solid, " + block_name)
                                     .attr({ x: i * tile_size, y: j * tile_size, z:1 })
                                     .collision([collision_fudge, collision_fudge],
@@ -212,29 +212,29 @@
                                 Crafty.e("2D, DOM, " + map_data[i][j].name)
                                     .attr({ x: i * tile_size, y: j * tile_size, z:1 });
                             }
-                            
+
                         }
                     }
                     var player1 = Crafty.e("2D, DOM, Creature, player, LeftControls, BombDropper, solid")
                         .attr({ x: tile_size*1, y: tile_size*1, z: 3 })
-                        .leftControls(5)
+                        .leftControls(3)
                         .Creature();
-                    
+
                     var player2 = Crafty.e("2D, DOM, Creature, player, RightControls, BombDropper, solid")
                         .attr({ x: tile_size*2, y: tile_size*1, z: 3 })
-                        .rightControls(5)
+                        .rightControls(3)
                         .Creature();
 
                 }
-                
+
             });
         }
 
-        
+
 	</script>
-    
+
     <canvas id="buffer" style="display:none;">
-        
+
     </canvas>
 </body>
 </html>

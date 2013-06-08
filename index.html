@@ -6,10 +6,10 @@
 <body>
 	<script type="text/javascript">
         
-        var tile_size = 16;
-        var collision_fudge = 2;
+        var tile_size = 80;
+        var collision_fudge = 10;
         
-		Crafty.init(800, 600);
+		Crafty.init(1000, 800);
 
 		// YOUR GAME CODE
        
@@ -59,10 +59,10 @@
             Creature: function() {
                 //setup animations
                 this.requires("SpriteAnimation, Collision, Grid")
-                .animate("walk_left", 6, 3, 8)
-                .animate("walk_right", 9, 3, 11)
-                .animate("walk_up", 3, 3, 5)
-                .animate("walk_down", 0, 3, 2)
+                .animate("walk_left", 9, 1, 11)
+                .animate("walk_right", 6, 1, 8)
+                .animate("walk_up", 0, 1, 2)
+                .animate("walk_down", 3, 1, 5)
                 .bind("NewDirection",
                     function (direction) {
                         if (direction.x < 0) {
@@ -107,12 +107,19 @@
         
         Crafty.scene("loading");
         
-        Crafty.sprite(tile_size, "bananabomber-sprites.png", {
+        Crafty.sprite(tile_size, tile_size*2, "assets/map_sprite.png", {
             floor: [0, 0],
+            player: [0, 3],
+            goal: [0, 1],
+            walln: [1, 0],
+            walll: [2, 0],
+            wallr: [3, 0],
+            wallb: [4, 0],
+            /*
             goal: [0, 1],
             wall: [0, 2],
             player: [0, 3],
-            enemy: [0, 3],
+            enemy: [0, 3],*/
         });
         
         var tile_types = [ {id: 1, solid: false, name:"floor",   rgba: [255, 255, 255, 255]},
@@ -126,6 +133,7 @@
                 
                 var level_x = level_data.map.x;
                 var level_y = level_data.map.y;
+                var map_data = [];
                 
                 var img = new Image();
                 img.src = "data/levels/" + level_data.map.img_name;
@@ -136,6 +144,7 @@
                     data = context.getImageData(0, 0, level_x, level_y).data;
                     
                     for (var i = 0; i < level_x; i++) {
+                        map_data[i] = [];
                         for (var j = 0; j < level_y; j++) {
                             var matched_any = false
                             for (var t in tile_types) {
@@ -146,6 +155,8 @@
                                     }
                                 }
                                 if (matches) {
+                                    map_data[i][j] = tile_types[t];
+                                    /*
                                     if (tile_types[t].solid) {
                                         Crafty.e("2D, DOM, Collision, solid, " + tile_types[t].name)
                                             .attr({ x: i * tile_size, y: j * tile_size, z:1 })
@@ -157,6 +168,7 @@
                                         Crafty.e("2D, DOM, " + tile_types[t].name)
                                             .attr({ x: i * tile_size, y: j * tile_size, z:1 });
                                     }
+                                    */
                                      
                                     matched_any = true;
                                 } 
@@ -166,18 +178,55 @@
                             }
                         }
                     }
+                    
+                    var wall_names = ["walln", "wallr", "walll", "wallb"]
+                    var block_name;
+                    
+                    for (var i = 0; i < level_x; i++) {
+                        for (var j = 0; j < level_y; j++) {
+                            console.log(i, j, map_data[i][j]);
+                            if (map_data[i][j].solid) {
+                                if (map_data[i][j].name == "wall") {
+                                    var blocked_right = false;
+                                    var blocked_left = false;
+                                    if (map_data[i + 1] && (map_data[i + 1][j].name == "wall")) {
+                                        blocked_right = true;
+                                    }
+                                    if (map_data[i - 1] && (map_data[i - 1][j].name == "wall")) {
+                                        blocked_left = true;
+                                    }
+                                    block_name = wall_names[blocked_right + 2*blocked_left]
+                                } else {
+                                    block_name = map_data[i][j].name;
+                                }
+                                
+                                console.log(block_name);
+                                
+                                Crafty.e("2D, DOM, Collision, solid, " + block_name)
+                                    .attr({ x: i * tile_size, y: j * tile_size, z:1 })
+                                    .collision([collision_fudge, collision_fudge],
+                                               [tile_size-collision_fudge, collision_fudge],
+                                               [tile_size-collision_fudge, tile_size-collision_fudge],
+                                               [collision_fudge, tile_size-collision_fudge]);
+                            } else {
+                                Crafty.e("2D, DOM, " + map_data[i][j].name)
+                                    .attr({ x: i * tile_size, y: j * tile_size, z:1 });
+                            }
+                            
+                        }
+                    }
+                    var player1 = Crafty.e("2D, DOM, Creature, player, LeftControls, BombDropper, solid")
+                        .attr({ x: tile_size*1, y: tile_size*1, z: 3 })
+                        .leftControls(5)
+                        .Creature();
+                    
+                    var player2 = Crafty.e("2D, DOM, Creature, player, RightControls, BombDropper, solid")
+                        .attr({ x: tile_size*2, y: tile_size*1, z: 3 })
+                        .rightControls(5)
+                        .Creature();
+
                 }
                 
-                var player1 = Crafty.e("2D, DOM, Creature, player, LeftControls, BombDropper, solid")
-                    .attr({ x: 16, y: 80, z: 2 })
-                    .leftControls(1)
-                    .Creature();
-                    
-                    
-                var player2 = Crafty.e("2D, DOM, Creature, player, RightControls, BombDropper, solid")
-                    .attr({ x: 32, y: 80, z: 2 })
-                    .rightControls(1)
-                    .Creature();
             });
         }
 

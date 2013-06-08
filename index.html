@@ -114,7 +114,9 @@
             walln: [1, 0],
             walll: [2, 0],
             wallr: [3, 0],
-            wallb: [4, 0],
+            wallb1: [4, 0],
+            wallb2: [5, 0],
+            wallb3: [6, 0],
             /*
             goal: [0, 1],
             wall: [0, 2],
@@ -156,19 +158,6 @@
                                 }
                                 if (matches) {
                                     map_data[i][j] = tile_types[t];
-                                    /*
-                                    if (tile_types[t].solid) {
-                                        Crafty.e("2D, DOM, Collision, solid, " + tile_types[t].name)
-                                            .attr({ x: i * tile_size, y: j * tile_size, z:1 })
-                                            .collision([collision_fudge, collision_fudge],
-                                                       [tile_size-collision_fudge, collision_fudge],
-                                                       [tile_size-collision_fudge, tile_size-collision_fudge],
-                                                       [collision_fudge, tile_size-collision_fudge]);
-                                    } else {
-                                        Crafty.e("2D, DOM, " + tile_types[t].name)
-                                            .attr({ x: i * tile_size, y: j * tile_size, z:1 });
-                                    }
-                                    */
 
                                     matched_any = true;
                                 }
@@ -198,6 +187,10 @@
                                     block_name = wall_names[blocked_right + 2*blocked_left]
                                 } else {
                                     block_name = map_data[i][j].name;
+                                }
+
+                                if (block_name=='wallb') {
+                                    block_name += (Number)(Math.random()<.9) || Crafty.math.randomInt(1,3);
                                 }
 
                                 console.log(block_name);

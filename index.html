@@ -26,12 +26,79 @@
         });
         
         
+        Crafty.c("LeftControls", {
+            init: function() {
+                this.requires('Multiway');
+            },
+            
+            leftControls: function(speed) {
+                this.multiway(speed, {UP_ARROW: -90, DOWN_ARROW: 90, RIGHT_ARROW: 0, LEFT_ARROW: 180})
+                return this;
+            }
+            
+        });
+        
+        Crafty.c("RightControls", {
+            init: function() {
+                this.requires('Multiway');
+            },
+            
+            rightControls: function(speed) {
+                this.multiway(speed, {W: -90, S: 90, D: 0, A: 180})
+                return this;
+            }
+            
+        });
        
         
+        Crafty.c('Creature', {
+            Creature: function() {
+                    //setup animations
+                    this.requires("SpriteAnimation, Collision, Grid")
+                    .animate("walk_left", 6, 3, 8)
+                    .animate("walk_right", 9, 3, 11)
+                    .animate("walk_up", 3, 3, 5)
+                    .animate("walk_down", 0, 3, 2)
+                    .bind("NewDirection",
+                        function (direction) {
+                            if (direction.x < 0) {
+                                if (!this.isPlaying("walk_left"))
+                                    this.stop().animate("walk_left", 10, -1);
+                            }
+                            if (direction.x > 0) {
+                                if (!this.isPlaying("walk_right"))
+                                    this.stop().animate("walk_right", 10, -1);
+                            }
+                            if (direction.y < 0) {
+                                if (!this.isPlaying("walk_up"))
+                                    this.stop().animate("walk_up", 10, -1);
+                            }
+                            if (direction.y > 0) {
+                                if (!this.isPlaying("walk_down"))
+                                    this.stop().animate("walk_down", 10, -1);
+                            }
+                            if(!direction.x && !direction.y) {
+                                this.stop();
+                            }
+                    })
+                    .bind('Moved', function(from) {
+                        if(this.hit('solid')){
+                            this.attr({x: from.x, y:from.y});
+                        }
+                    })
+                    /*
+                    .onHit("fire", function() {
+                        this.destroy();
+                    // Subtract life and play scream sound :-)
+                    });
+                    */
+                return this;
+            }
+        });
+                
+                
         Crafty.scene("main", function () {
             load_level(1);
-            
-            
         });
         
         Crafty.scene("loading");
@@ -44,10 +111,10 @@
             enemy: [0, 3],
         });
         
-        var tile_types = [ {id: 1, name:"floor",   rgba: [255, 255, 255, 255]},
-                           {id: 2, name:"wall",    rgba: [  0,   0,   0, 255]},
-                           {id: 2, name:"player",    rgba: [  255,   0,   0, 255]},
-                           {id: 2, name:"goal",    rgba: [  0,   255,   0, 255]}]
+        var tile_types = [ {id: 1, solid: false, name:"floor",   rgba: [255, 255, 255, 255]},
+                           {id: 2, solid: true, name:"wall",    rgba: [  0,   0,   0, 255]},
+                           {id: 2, solid: false, name:"player",    rgba: [  255,   0,   0, 255]},
+                           {id: 2, solid: false, name:"goal",    rgba: [  0,   255,   0, 255]}]
         
         function load_level(level_id) {
             
@@ -75,8 +142,9 @@
                                     }
                                 }
                                 if (matches) {
-                                    Crafty.e("2D, DOM, " + tile_types[t].name)
+                                    Crafty.e("2D, DOM, " + ((tile_types[t].solid)?'solid, ':'') + tile_types[t].name)
                                         .attr({ x: i * 16, y: j * 16, z:1 });
+                                    
                                     matched_any = true;
                                 } 
                             }
@@ -86,6 +154,11 @@
                         }
                     }
                 }
+                
+                var player1 = Crafty.e("2D, DOM, Creature, player, LeftControls, BombDropper")
+                    .attr({ x: 16, y: 80, z: 2 })
+                    .leftControls(1)
+                    .Creature();
             });
         }
 

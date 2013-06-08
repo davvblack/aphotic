@@ -155,13 +155,13 @@
                     }
                 }
                 
-                var player1 = Crafty.e("2D, DOM, Creature, player, LeftControls, BombDropper")
+                var player1 = Crafty.e("2D, DOM, Creature, player, LeftControls, BombDropper, solid")
                     .attr({ x: 16, y: 80, z: 2 })
                     .leftControls(1)
                     .Creature();
                     
                     
-                var player2 = Crafty.e("2D, DOM, Creature, player, RightControls, BombDropper")
+                var player2 = Crafty.e("2D, DOM, Creature, player, RightControls, BombDropper, solid")
                     .attr({ x: 32, y: 80, z: 2 })
                     .rightControls(1)
                     .Creature();

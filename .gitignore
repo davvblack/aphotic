@@ -1,3 +1,5 @@
 local/
 *.komodoproject
 .DS_Store
+aphotic.sublime-project
+aphotic.sublime-workspace

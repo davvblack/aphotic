@@ -1,0 +1,10 @@
+{
+	"map":{
+		"x": 20,
+		"y": 20,
+		"img_name": "1/level.png"
+	},
+	"entities": [
+		{}
+	]
+}

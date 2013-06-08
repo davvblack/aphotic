@@ -32,7 +32,7 @@
             },
             
             leftControls: function(speed) {
-                this.multiway(speed, {UP_ARROW: -90, DOWN_ARROW: 90, RIGHT_ARROW: 0, LEFT_ARROW: 180})
+                this.multiway(speed, {W: -90, S: 90, D: 0, A: 180})
                 return this;
             }
             
@@ -44,7 +44,7 @@
             },
             
             rightControls: function(speed) {
-                this.multiway(speed, {W: -90, S: 90, D: 0, A: 180})
+                this.multiway(speed, {UP_ARROW: -90, DOWN_ARROW: 90, RIGHT_ARROW: 0, LEFT_ARROW: 180})
                 return this;
             }
             
@@ -53,45 +53,45 @@
         
         Crafty.c('Creature', {
             Creature: function() {
-                    //setup animations
-                    this.requires("SpriteAnimation, Collision, Grid")
-                    .animate("walk_left", 6, 3, 8)
-                    .animate("walk_right", 9, 3, 11)
-                    .animate("walk_up", 3, 3, 5)
-                    .animate("walk_down", 0, 3, 2)
-                    .bind("NewDirection",
-                        function (direction) {
-                            if (direction.x < 0) {
-                                if (!this.isPlaying("walk_left"))
-                                    this.stop().animate("walk_left", 10, -1);
-                            }
-                            if (direction.x > 0) {
-                                if (!this.isPlaying("walk_right"))
-                                    this.stop().animate("walk_right", 10, -1);
-                            }
-                            if (direction.y < 0) {
-                                if (!this.isPlaying("walk_up"))
-                                    this.stop().animate("walk_up", 10, -1);
-                            }
-                            if (direction.y > 0) {
-                                if (!this.isPlaying("walk_down"))
-                                    this.stop().animate("walk_down", 10, -1);
-                            }
-                            if(!direction.x && !direction.y) {
-                                this.stop();
-                            }
-                    })
-                    .bind('Moved', function(from) {
-                        if(this.hit('solid')){
-                            this.attr({x: from.x, y:from.y});
+                //setup animations
+                this.requires("SpriteAnimation, Collision, Grid")
+                .animate("walk_left", 6, 3, 8)
+                .animate("walk_right", 9, 3, 11)
+                .animate("walk_up", 3, 3, 5)
+                .animate("walk_down", 0, 3, 2)
+                .bind("NewDirection",
+                    function (direction) {
+                        if (direction.x < 0) {
+                            if (!this.isPlaying("walk_left"))
+                                this.stop().animate("walk_left", 10, -1);
                         }
-                    })
-                    /*
-                    .onHit("fire", function() {
-                        this.destroy();
-                    // Subtract life and play scream sound :-)
-                    });
-                    */
+                        if (direction.x > 0) {
+                            if (!this.isPlaying("walk_right"))
+                                this.stop().animate("walk_right", 10, -1);
+                        }
+                        if (direction.y < 0) {
+                            if (!this.isPlaying("walk_up"))
+                                this.stop().animate("walk_up", 10, -1);
+                        }
+                        if (direction.y > 0) {
+                            if (!this.isPlaying("walk_down"))
+                                this.stop().animate("walk_down", 10, -1);
+                        }
+                        if(!direction.x && !direction.y) {
+                            this.stop();
+                        }
+                })
+                .bind('Moved', function(from) {
+                    if(this.hit('solid')){
+                        this.attr({x: from.x, y:from.y});
+                    }
+                })
+                /*
+                .onHit("fire", function() {
+                    this.destroy();
+                // Subtract life and play scream sound :-)
+                });
+                */
                 return this;
             }
         });
@@ -158,6 +158,12 @@
                 var player1 = Crafty.e("2D, DOM, Creature, player, LeftControls, BombDropper")
                     .attr({ x: 16, y: 80, z: 2 })
                     .leftControls(1)
+                    .Creature();
+                    
+                    
+                var player2 = Crafty.e("2D, DOM, Creature, player, RightControls, BombDropper")
+                    .attr({ x: 32, y: 80, z: 2 })
+                    .rightControls(1)
                     .Creature();
             });
         }

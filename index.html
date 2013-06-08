@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<head>	
+<head>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script> 
 	<script type="text/javascript" src="js/lib/crafty.js"></script>
 </head>
 <body>
@@ -7,7 +8,90 @@
 		Crafty.init(800, 600);
 
 		// YOUR GAME CODE
+       
+        Crafty.scene("loading", function () {
+            //load takes an array of assets and a callback when complete
+            Crafty.load(["bananabomber-sprites.png"], function () {
+                Crafty.scene("main"); //when everything is loaded, run the main scene
+            });
+        
+            /*
+            //black background with some loading text
+            Crafty.background("#000");
+            Crafty.e("2D, DOM, Text").attr({ w: 100, h: 20, x: 150, y: 120 })
+                    .text("Loading")
+                    .css({ "text-align": "center" });
+            
+            */ 
+        });
+        
+        
+       
+        
+        Crafty.scene("main", function () {
+            load_level(1);
+            
+            
+        });
+        
+        Crafty.scene("loading");
+        
+        Crafty.sprite(16, "bananabomber-sprites.png", {
+            floor: [0, 0],
+            goal: [0, 1],
+            wall: [0, 2],
+            player: [0, 3],
+            enemy: [0, 3],
+        });
+        
+        var tile_types = [ {id: 1, name:"floor",   rgba: [255, 255, 255, 255]},
+                           {id: 2, name:"wall",    rgba: [  0,   0,   0, 255]},
+                           {id: 2, name:"player",    rgba: [  246,   0,   31, 255]},
+                           {id: 2, name:"goal",    rgba: [  51,   255,   16, 255]}]
+        
+        function load_level(level_id) {
+            
+            $.getJSON("data/levels/" + level_id + "/data.json", function (level_data) {
+                
+                var level_x = level_data.map.x;
+                var level_y = level_data.map.y;
+                
+                var img = new Image();
+                img.src = "data/levels/" + level_data.map.img_name;
+                var context = document.getElementById('buffer').getContext('2d');
+                context.drawImage(img, 0, 0);
+                
+                data = context.getImageData(0, 0, level_x, level_y).data;
+                
+                for (var i = 0; i < level_x; i++) {
+                    for (var j = 0; j < level_y; j++) {
+                        var matched_any = false
+                        for (var t in tile_types) {
+                            var matches = true;
+                            for (var p = 0; p < 4; p++) {
+                                if (data[p + (i * 4) + (j * 4 * level_x) ] != tile_types[t].rgba[p]) {
+                                    matches = false;
+                                }
+                            }
+                            if (matches) {
+                                Crafty.e("2D, DOM, " + tile_types[t].name)
+                                    .attr({ x: i * 16, y: j * 16, z:1 });
+                                matched_any = true;
+                            } 
+                        }
+                        if (!matched_any) {
+                            console.log(data[(i * 4) + (j * 4 * level_x)] , data[(i * 4) + (j * 4 * level_x) +1], data[(i * 4) + (j * 4 * level_x) +2], data[(i * 4) + (j * 4 * level_x) +3])
+                        }
+                    }
+                }
+            });
+        }
 
+        
 	</script>
+    
+    <canvas id="buffer" style="display:none;">
+        
+    </canvas>
 </body>
 </html>

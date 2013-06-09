@@ -165,13 +165,16 @@
         }
 
         Crafty.c('Creature', {
-            Creature: function() {
+            Creature: function(light) {
                 //setup animations
+                console.log('creature', light);
+                var startFrame = (light) ? 8 : 0;
+                var stopFrame = startFrame + 7;
                 this.requires("SpriteAnimation, Collision, Grid")
-                .animate("walk_left", 0, 5, 7)
-                .animate("walk_right", 0, 4, 7)
-                .animate("walk_up", 0, 2, 7)
-                .animate("walk_down", 0, 3, 7)
+                .animate("walk_left", startFrame, 5, stopFrame)
+                .animate("walk_right", startFrame, 4, stopFrame)
+                .animate("walk_up", startFrame, 2, stopFrame)
+                .animate("walk_down", startFrame, 3, stopFrame)
                 .bind("NewDirection",
                     function (direction) {
                         if (direction.x < 0) {
@@ -748,7 +751,7 @@
 								var char = Crafty.e("2D, DOM, Creature, player, solid, " + entity.controls + ", " + ((entity.light)?"Light":""))
 									.attr(middle)
 									.Controls(6)
-									.Creature()
+									.Creature(entity.light)
 									.bind('Moved', function(from) {
 										point_camera(this._x, this._y);
 									});
@@ -756,8 +759,8 @@
 								if (entity.light) {
 									char.Light(0, 0, 2, true)
 									.bind('Moved', function(from) {
-										this.tileX = (this._x / tile_size + this.r);
-										this.tileY = (this._y / tile_size + this.r);
+										this.tileX = ((this._x / tile_size - 1.25) + this.r);
+										this.tileY = ((this._y / tile_size) + this.r);
 										redraw_lights();
 									});		
 								}

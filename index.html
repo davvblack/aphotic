@@ -116,11 +116,44 @@
 			return [x * tile_size, y * tile_size - tile_vertical_over]
 		};
 		
-		Crafty.c('Switch', {
-            Switch: function() {
+		Crafty.c('Trigger', {
+            Trigger: function(event_name, state, things) {
+				this.state = state;
+				this.touching = false;
 				this.requires("SpriteAnimation, Collision, Grid")
 				.bind('EnterFrame', function() {
-					//console.log('millions!');
+				})
+				
+				return this;
+            }
+        });
+		
+		Crafty.c('Switch', {
+            Switch: function(event_name, state) {
+				this.state = state;
+				this.touching = false;
+				this.requires("SpriteAnimation, Collision, Grid")
+				.bind('EnterFrame', function() {
+					if (this.hit('player')) {
+						if (!this.touching) {
+							this.touching = true;
+							if (!this.state) {
+								this.state = true;
+								this.removeComponent("switch_off");
+								this.addComponent("switch_on");
+								Crafty.trigger(event_name, this.state);
+								console.log(event_name, this.state);
+							} else {
+								this.state = false;
+								this.addComponent("switch_off");
+								this.removeComponent("switch_on");
+								Crafty.trigger(event_name, this.state);
+								console.log(event_name, this.state);
+							}
+						}
+					} else {
+						this.touching = false;
+					}
 				});
 				
 				return this;
@@ -229,6 +262,8 @@
             wallb3: [6, 0],
 			plate_on: [6, 1],
 			plate_off: [5, 1],
+			switch_on: [7, 0],
+			switch_off: [6, 0],
 			door_v: [8,0],
 			exit_v: [9,0],
 			open_v: [9,1],
@@ -354,8 +389,11 @@
 						
 						switch (entity.type) {
 							case "switch":
-								Crafty.e("2D, DOM, door_h").attr(under);
-								break;
+								if (entity.state) {
+									Crafty.e("2D, DOM, switch_on, Switch").attr(under).Switch(entity.event, entity.state);
+								} else {
+									Crafty.e("2D, DOM, switch_off, Switch").attr(under).Switch(entity.event, entity.state);
+								}								break;
 							case "lever":
 							
 								break;
@@ -389,6 +427,9 @@
 								} else {
 									Crafty.e("2D, DOM, closed_v, solid, Door_v").attr(over).Door_v(entity.event, entity.state);
 								}
+								break;
+							case "trigger":
+								Crafty.e("Trigger").Trigger(entity.bool, entity.ins, entity.out);
 								break;
 						}
 						

@@ -752,7 +752,9 @@
 									.bind('Moved', function(from) {
 										point_camera(this._x, this._y);
 									});
-									
+								if (entity.primary) {
+									point_camera(char._x, char._y);
+								}
 								if (entity.light) {
 									char.Light(0, 0, 2, true)
 									.bind('Moved', function(from) {

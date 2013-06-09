@@ -90,10 +90,10 @@
                     if(this.hit('solid')){
                         this.attr({x: from.x, y:from.y});
                     }
-                }).collision([20, 20],
-					[tile_size-20, 20],
-					[tile_size-20, tile_size],
-					[20, tile_size])
+                }).collision([20, 30],
+							[tile_size - 20, 30],
+							[tile_size - 20, tile_size + 35],
+							[20, tile_size + 35])
                 /*
                 .onHit("fire", function() {
                     this.destroy();

@@ -3,7 +3,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 	<script type="text/javascript" src="js/lib/crafty.js"></script>
 </head>
-<body>
+<body style="background: #26261a">
 	<script type="text/javascript">
 
         var tile_size = 80;
@@ -90,7 +90,10 @@
                     if(this.hit('solid')){
                         this.attr({x: from.x, y:from.y});
                     }
-                })
+                }).collision([20, 20],
+					[tile_size-20, 20],
+					[tile_size-20, tile_size],
+					[20, tile_size])
                 /*
                 .onHit("fire", function() {
                     this.destroy();
@@ -212,14 +215,23 @@
                     var player1 = Crafty.e("2D, DOM, Creature, player, LeftControls, BombDropper, solid")
                         .attr({ x: tile_size*1, y: tile_size*1, z: 3 })
                         .leftControls(3)
-                        .Creature();
+                        .Creature()
+						.bind('Moved', function(from) {
+							Crafty.viewport.scroll('_x', 500-this._x);
+							Crafty.viewport.scroll('_y', 500-this._y);
+							//console.log(this, from);
+						});
 
                     var player2 = Crafty.e("2D, DOM, Creature, player, RightControls, BombDropper, solid")
                         .attr({ x: tile_size*2, y: tile_size*1, z: 3 })
                         .rightControls(3)
-                        .Creature();
+                        .Creature()
+						;
 
                 }
+				
+				Crafty.viewport.scroll('_x', 500-80);
+				Crafty.viewport.scroll('_y', 500-80);
 
             });
         }

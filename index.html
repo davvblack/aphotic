@@ -335,6 +335,11 @@
                         .attr({ x: tile_size*1, y: tile_size*2, z: tile_size*2 })
                         .rightControls(6)
                         .Creature()
+						.bind('Moved', function(from) {
+							Crafty.viewport.scroll('_x', 500-this._x);
+							Crafty.viewport.scroll('_y', 500-this._y);
+							//console.log(this, from);
+						});
 						;
 
 					for (var entity_id in level_data.entities) {

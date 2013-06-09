@@ -21,6 +21,7 @@
 		{"type": "light", "location":[4,13], "state": false, "event": "switch4", "radius": 4},
 		{"type": "light", "location":[3,19], "state": true, "event": "none", "radius": 4},
 		{"type": "light", "location":[3,10], "state": false, "event": "trigger1", "radius": 6},
+		{"type": "light", "location":[3,3], "state": false, "event": "switch5", "radius": 6},
 		{"type": "trigger", "state": false, "ins": ["switch2","switch3"], "out":"trigger1", "bool":"or"},
 		{"type": "trigger", "state": false, "ins": ["switch2","switch3"], "out":"trigger2", "bool":"and"},
 		{"type": "player", "location":[4,20], "controls":"RightControls"}

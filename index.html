@@ -3,7 +3,17 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 	<script type="text/javascript" src="js/lib/crafty.js"></script>
 	<style>
-		#cr-stage {margin: 0 auto; box-shadow: 4px 4px 20px black;}
+
+        body {
+            margin: 10px auto; 
+            width: 800px;
+            height: 600px;
+            position: relative;
+        }
+
+        #cr-stage {
+            overflow: hidden;
+        }
 
         #darkness {
             position: absolute;
@@ -17,12 +27,33 @@
             width: 100%;
             height: 100%;
         }
+
+        #darkness-stage {
+            width: 800px;
+            height: 600px;
+            position: absolute;
+            overflow: hidden;
+        }
+
+        #border {
+            box-shadow: inset 0px 0px 50px black;
+            width: 800px;
+            height: 600px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 100000000 !important;
+        }
 	</style>
 </head>
-<body style="background: #26261a">
-    <div id="darkness-container">
-        <canvas id="darkness"></canvas>
+<body style="background: #000">
+    
+    <div id="darkness-stage">
+        <div id="darkness-container">
+            <canvas id="darkness"></canvas>
+        </div>
     </div>
+
 	<script type="text/javascript">
 
 		jQuery.reduce = function(arr, valueInitial, fnReduce)
@@ -42,7 +73,7 @@
 							[tile_size-collision_fudge, tile_size-collision_fudge + tile_vertical_over],
 							[collision_fudge, tile_size-collision_fudge + tile_vertical_over]];
 		
-		Crafty.init(1600, 1000);
+		Crafty.init(800, 600);
 
         Crafty.scene("loading", function () {
             //load takes an array of assets and a callback when complete
@@ -387,6 +418,16 @@
 							//ugh, a special buffer floor that walls treat as wall.
 						   {id: 5, solid: false, name:"floor_x",   rgba: [50, 255, 255, 255]}]
 
+
+
+
+
+
+
+
+
+
+
         var darknessMap = document.getElementById('darkness');
         var darknessCtx = darknessMap.getContext('2d');
         var _globalCompositeOperation
@@ -397,7 +438,8 @@
         function resetDarknessMap (w, h) {
             darknessMap.width = w;
             darknessMap.height = h;
-
+            darknessMap.style.height = h * tile_size + 'px';
+            darknessMap.style.width = w  * tile_size + 'px';
             darknessCtx.globalCompositeOperation = _globalCompositeOperation;
             darknessCtx.fillStyle = 'rgba(0,0,0,150)';
             darknessCtx.clearRect(0, 0, w, h);
@@ -407,8 +449,18 @@
             darknessCtx.globalCompositeOperation = 'destination-out';
         }
 
+        function positionDarknessMap (x, y) {
+            darknessMap.style.left = (-x + 400) + 'px';
+            darknessMap.style.top = (-y + 300) + 'px';
+        }
+
+
+        function lightRect (x, y, w, h) {
+            darknessCtx.fillRect(x, y, w, h);
+        }
+        
         function lightTile (x, y) {
-            darknessCtx.fillRect(x, y, 1, 1);
+            lightRect(x, y, 1, 1);
         }
 
         function lightCircle (x, y, r) {
@@ -416,6 +468,31 @@
             darknessCtx.arc(x, y, r, 0, 360, false);
             darknessCtx.fill();
         }
+
+        function darkenRect (x, y, w, h) {
+            darknessCtx.globalCompositeOperation = 'source-over';
+            lightRect(x, y, w, h);
+            darknessCtx.globalCompositeOperation = 'destination-out';
+        }
+
+        function darkenTile (x, y) {
+            darkenRect(x, y, 1, 1);
+        }
+
+        function darkenCircle (x, y, r) {
+            darknessCtx.globalCompositeOperation = 'source-over';
+            darknessCtx.beginPath();
+            darknessCtx.arc(x, y, r, 0, 360, false);
+            darknessCtx.fill();
+            darknessCtx.globalCompositeOperation = 'destination-out';
+        }
+
+
+
+
+
+
+
 
         function load_level(level_id) {
 
@@ -501,8 +578,9 @@
                         .leftControls(6)
                         .Creature()
 						.bind('Moved', function(from) {
-							Crafty.viewport.scroll('_x', 500-this._x);
-							Crafty.viewport.scroll('_y', 500-this._y);
+							Crafty.viewport.scroll('_x', 400-this._x);
+							Crafty.viewport.scroll('_y', 300-this._y);
+                            positionDarknessMap(this._x, this._y);
 							//console.log(this, from);
 						});
 
@@ -511,8 +589,9 @@
                         .rightControls(6)
                         .Creature()
 						.bind('Moved', function(from) {
-							Crafty.viewport.scroll('_x', 500-this._x);
-							Crafty.viewport.scroll('_y', 500-this._y);
+							Crafty.viewport.scroll('_x', 400-this._x);
+							Crafty.viewport.scroll('_y', 300-this._y);
+                            positionDarknessMap(this._x, this._y);
 							//console.log(this, from);
 						});
 						;
@@ -578,8 +657,9 @@
 					
                 }
 
-				Crafty.viewport.scroll('_x', 500-80);
-				Crafty.viewport.scroll('_y', 500-80);
+				Crafty.viewport.scroll('_x', 400-80);
+				Crafty.viewport.scroll('_y', 300-80);
+                positionDarknessMap(this._x, this._y);
 
             });
         }
@@ -588,6 +668,8 @@
 	</script>
 
     <canvas id="buffer" style="display:none;"></canvas>
+
+    <div id="border"></div>
 
 </body>
 </html>

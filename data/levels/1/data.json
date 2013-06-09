@@ -12,9 +12,9 @@
 		{"type": "doorh", "location":[7,6], "state": false, "event": "trigger9"},
 		{"type": "doorv", "location":[17,5], "state": false, "event": "trigger1"},
 		{"type": "exit", "location":[18,1], "state": true, "event": "trigger1"},
-		{"type": "switch", "location":[18,1], "state": false, "event": "switch1"},
+		{"type": "switch", "location":[16,0], "state": false, "event": "switch2"},
 		{"type": "switch", "location":[1,0], "state": false, "event": "switch1"},
-		{"type": "trigger", "state": false, "out": "trigger1", "ins": ["switch1","plate2"], "bool":"or"},
+		{"type": "trigger", "state": false, "out": "trigger1", "ins": ["switch2","plate2"], "bool":"or"},
 		{"type": "trigger", "state": false, "out": "trigger9", "ins": ["switch1","plate1"], "bool":"and"}
 	],
 	

@@ -738,10 +738,10 @@
 								}
 								break;
 							case "trigger":
-								Crafty.e("Trigger").Trigger(entity.bool, entity.ins, entity.out, entity.state);
+								Crafty.e("2D, DOM, Trigger").Trigger(entity.bool, entity.ins, entity.out, entity.state);
 								break;
 							case "light":
-								Crafty.e("Light").Light(entity.location[0], entity.location[1], entity.radius, entity.state, entity.event)
+								Crafty.e("2D, DOM, Light").Light(entity.location[0], entity.location[1], entity.radius, entity.state, entity.event)
 								break;
 							case "player":
 								console.log(entity.controls);

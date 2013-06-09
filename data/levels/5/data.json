@@ -1,0 +1,53 @@
+{
+	"level_id": 5,
+	
+	"map":{
+		"x": 17,
+		"y": 20,
+		"img_name": "5/level.png"
+	},
+	
+	"entities": [
+		{"type": "player", "location":[4,18], "controls":"RightControls", "primary":true},
+		{"type": "player", "location":[2,18], "controls":"LeftControls", "light":true},
+
+		{"type": "doorh", "location":[6,18], "state": false, "event": "plate1"},
+		{"type": "doorh", "location":[6,13], "state": false, "event": "plate10"},
+		{"type": "doorh", "location":[10,13], "state": false, "event": "switch1"},
+
+		{"type": "plate", "location":[1,16], "state": false, "event": "plate1"},
+		{"type": "plate", "location":[3,16], "state": false, "event": "plate2"},
+		{"type": "plate", "location":[5,16], "state": false, "event": "plate3"},
+		{"type": "plate", "location":[1,14], "state": false, "event": "plate4"},
+		{"type": "plate", "location":[3,14], "state": false, "event": "plate5"},
+		{"type": "plate", "location":[5,14], "state": false, "event": "plate6"},
+		{"type": "plate", "location":[1,12], "state": false, "event": "plate7"},
+		{"type": "plate", "location":[3,12], "state": false, "event": "plate8"},
+		{"type": "plate", "location":[5,12], "state": false, "event": "plate9"},
+
+		{"type": "plate", "location":[11,14], "state": false, "event": "plate10"},
+
+		{"type": "switch", "location":[9,12], "state": false, "event": "switch1"},
+
+		{"type": "exit", "location":[2,8], "state": false, "event": "switch1", "exit_to": 5},	
+		
+		
+
+		{"type": "light", "location":[5,15], "state": false, "event": "plate1", "radius":8},
+		{"type": "light", "location":[10,15], "state": false, "event": "plate2", "radius":5},
+		{"type": "light", "location":[15,15], "state": false, "event": "plate3", "radius":5},
+
+		{"type": "light", "location":[5,10], "state": false, "event": "plate4", "radius":5},
+		{"type": "light", "location":[10,10], "state": false, "event": "plate5", "radius":5},
+		{"type": "light", "location":[15,10], "state": false, "event": "plate6", "radius":5},
+
+		{"type": "light", "location":[5,5], "state": false, "event": "plate7", "radius":5},
+		{"type": "light", "location":[10,5], "state": false, "event": "plate8", "radius":5},
+		{"type": "light", "location":[15,5], "state": false, "event": "plate9", "radius":5},
+
+		
+
+	]
+	
+
+}

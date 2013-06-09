@@ -174,7 +174,7 @@
 					bind_trigger.call(this, input, initial, reducer);
 				}
 				
-				function bind_trigger(input) {
+				function bind_trigger(input, initial, reducer) {
 					this.bind(input, function(state) {
 						this.states[input] = state;
 						var new_state = (positive == $.reduce(this.states, initial, reducer));

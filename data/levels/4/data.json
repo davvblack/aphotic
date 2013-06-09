@@ -1,0 +1,46 @@
+{
+	"level_id": 4,
+	
+	"map":{
+		"x": 15,
+		"y": 24,
+		"img_name": "4/level.png"
+	},
+	
+	"entities": [
+		{"type": "player", "location":[2,22], "controls":"RightControls", "primary":true},
+		{"type": "player", "location":[3,22], "controls":"LeftControls", "light":true},
+		{"type": "light", "location":[3,21], "state": true, "event": "none", "radius":4},
+
+		{"type": "doorv", "location":[2,20], "state": false, "event": "trigger2"},
+		{"type": "trigger", "state": false, "ins":["plate1","switch1"], "out": "trigger1", "bool":"and"},
+		{"type": "trigger", "state": false, "ins":["trigger1","switch2"], "out": "trigger2", "bool":"or"},
+		{"type": "switch", "location":[8,21], "state": false, "event": "switch1"},
+		{"type": "plate", "location":[5,22], "state": false, "event": "plate1"},
+
+		{"type": "switch", "location":[11,21], "state": false, "event": "switch2"},
+
+		{"type": "light", "location":[4,13], "state": false, "event": "switch2", "radius":5},
+
+		{"type": "doorv", "location":[2,17], "state": false, "event": "switch2"},
+		
+		{"type": "plate", "location":[1,14], "state": false, "event": "plate2"},
+		{"type": "switch", "location":[8,12], "state": false, "event": "switch3"},
+		{"type": "trigger", "state": false, "ins":["plate2","switch3"], "out": "trigger3", "bool":"or"},
+
+		{"type": "light", "location":[11,15], "state": false, "event": "switch2", "radius":7},
+		{"type": "doorh", "location":[4,15], "state": false, "event": "trigger3"},
+		{"type": "doorh", "location":[8,15], "state": false, "event": "switch3"},
+
+		{"type": "plate", "location":[5,6], "state": false, "event": "plate3"},
+		{"type": "switch", "location":[3,8], "state": false, "event": "switch4"},
+		{"type": "trigger", "state": false, "ins":["plate3","switch4"], "out": "trigger4", "bool":"or"},
+		{"type": "doorh", "location":[5,11], "state": false, "event": "trigger4"},
+
+		
+		{"type": "exit", "location":[2,8], "state": false, "event": "switch4", "exit_to": 5}	
+
+	]
+	
+
+}

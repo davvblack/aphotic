@@ -1,0 +1,27 @@
+{
+	"level_id": 3,
+	
+	"map":{
+		"x": 8,
+		"y": 22,
+		"img_name": "3/level.png"
+	},
+	
+	"entities": [
+		
+		{"type": "doorh", "location":[3,19], "state": false, "event": "plate1"},
+		{"type": "plate", "location":[4,18], "state": false, "event": "plate1"},
+		{"type": "light", "location":[5,18], "state": true, "event": "none", "radius":2},
+		{"type": "light", "location":[3,19], "state": false, "event": "plate1", "radius":2},
+		
+		{"type": "exit", "location":[5,0], "state": true, "event": "none", "exit_to": 4},		
+		
+		{"type": "player", "location":[5,20], "controls":"RightControls", "primary":true},
+		{"type": "player", "location":[2,19], "controls":"LeftControls", "light":true}
+	],
+	
+	"unused": [
+		
+		
+	]
+}

@@ -65,6 +65,9 @@
 			return valueInitial;
 		}		
 
+		var stage_height = 700;
+		var stage_width = 980;
+		
         var tile_size = 80;
 		var tile_vertical_over = 40;
         var collision_fudge = 10;
@@ -73,7 +76,7 @@
 							[tile_size-collision_fudge, tile_size-collision_fudge + tile_vertical_over],
 							[collision_fudge, tile_size-collision_fudge + tile_vertical_over]];
 		
-		Crafty.init(980, 700);
+		Crafty.init(stage_width, stage_height);
 
         Crafty.scene("loading", function () {
             //load takes an array of assets and a callback when complete
@@ -379,6 +382,23 @@
 				return this;
             }
         });
+		
+		Crafty.c('Light', {
+			Light: function(x, y, r, state, event_name) {
+				this.x = x;
+				this.y = y;
+				this.r = r;
+				this.state = state;
+				this.listen_to = event_name;
+				this.bind(this.listen_to, function(new_state) {
+					if (new_state != this.state) {
+						this.state = new_state;
+						redraw_lights();
+					}
+				})
+				return this;
+			}
+		})
 
         Crafty.sprite(tile_size, tile_size+tile_vertical_over, "assets/map_sprite.png", {
             floor: [0, 1],
@@ -431,12 +451,12 @@
         
         darknessCtx.globalCompositeOperation = 'destination-out';
         darknessCtx.fillStyle = 'rgba(0,0,0,1)';
-        
+		
         function resetDarknessMap (w, h) {
             darknessMap.width = w;
             darknessMap.height = h;
-            darknessMap.style.height = h * tile_size + 'px';
-            darknessMap.style.width = w  * tile_size + 'px';
+            darknessMap.style.height = (h + 1) * tile_size + 'px';
+            darknessMap.style.width = (w + 1)  * tile_size + 'px';
             darknessCtx.globalCompositeOperation = _globalCompositeOperation;
             darknessCtx.fillStyle = 'rgba(0,0,0,150)';
             darknessCtx.clearRect(0, 0, w, h);
@@ -447,8 +467,8 @@
         }
 
         function positionDarknessMap (x, y) {
-            darknessMap.style.left = (-x + 400) + 'px';
-            darknessMap.style.top = (-y + 300) + 'px';
+            darknessMap.style.left = (-x + stage_width / 2 - tile_size * 1.2) + 'px';
+            darknessMap.style.top = (-y + stage_height / 2 - tile_size * 1.2) + 'px';
         }
 
 
@@ -484,12 +504,30 @@
             darknessCtx.globalCompositeOperation = 'destination-out';
         }
 
+		function point_camera(x, y) {
+			Crafty.viewport.scroll('_x', stage_width / 2 - x);
+			Crafty.viewport.scroll('_y', stage_height / 2 - y);
+			positionDarknessMap(x, y);
+			global_level_data.camera_y = y;
+			global_level_data.camera_x = x;
+		}
+
+		function redraw_lights() {
+			resetDarknessMap(global_level_data.map.x, global_level_data.map.y);
+			var lights = Crafty("Light");
+			
+			for (var i=0; i<lights.length; i++) {
+				var light = Crafty(lights[i]);
+				console.log(light);
+				if (light.state) {
+					lightCircle(light.x, light.y, light.r);
+				}
+			}
+			point_camera(global_level_data.camera_x, global_level_data.camera_y);
+		}
 
 
-
-
-
-
+		var global_level_data;
 
         function load_level(level_id) {
 
@@ -497,12 +535,14 @@
 
                 var level_x = level_data.map.x;
                 var level_y = level_data.map.y;
-
-                resetDarknessMap(level_x, level_y);
+				
+				global_level_data = level_data;
+				
+                /*resetDarknessMap(level_x, level_y);
                 lightTile(5, 5)
-                lightTile(7, 6)
+                //lightTile(7, 6)
                 lightTile(8, 6)
-                lightCircle(10, 10, 2)
+                lightCircle(7, 6, 2) */
                 var map_data = [];
 
                 var img = new Image();
@@ -575,9 +615,12 @@
                         .leftControls(6)
                         .Creature()
 						.bind('Moved', function(from) {
+							/*
 							Crafty.viewport.scroll('_x', 400-this._x);
 							Crafty.viewport.scroll('_y', 300-this._y);
                             positionDarknessMap(this._x, this._y);
+							*/
+							point_camera(this._x, this._y);
 							//console.log(this, from);
 						});
 
@@ -586,9 +629,11 @@
                         .rightControls(6)
                         .Creature()
 						.bind('Moved', function(from) {
+						/*
 							Crafty.viewport.scroll('_x', 400-this._x);
 							Crafty.viewport.scroll('_y', 300-this._y);
-                            positionDarknessMap(this._x, this._y);
+                            positionDarknessMap(this._x, this._y);*/
+							point_camera(this._x, this._y);
 							//console.log(this, from);
 						});
 						;
@@ -647,17 +692,18 @@
 							case "trigger":
 								Crafty.e("Trigger").Trigger(entity.bool, entity.ins, entity.out, entity.state);
 								break;
+							case "light":
+								Crafty.e("Light").Light(entity.location[0], entity.location[1], entity.radius, entity.state, entity.event)
+							
 						}
 						
 					}
 					
-					
+					redraw_lights();
                 }
 
-				Crafty.viewport.scroll('_x', 400-80);
-				Crafty.viewport.scroll('_y', 300-80);
-                positionDarknessMap(this._x, this._y);
-
+				point_camera(stage_width/2, stage_height/2);
+				
             });
         }
 

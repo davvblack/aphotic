@@ -460,13 +460,14 @@
         var darknessMap = document.getElementById('darkness');
         var darknessCtx = darknessMap.getContext('2d');
         var _globalCompositeOperation
-        
+        var darknessMapWidth;
+        var darknessMapHeight;
         darknessCtx.globalCompositeOperation = 'destination-out';
         darknessCtx.fillStyle = 'rgba(0,0,0,1)';
 		
         function resetDarknessMap (w, h) {
-            darknessMap.width = w;
-            darknessMap.height = h;
+            darknessMap.width = darknessMapWidth = w;
+            darknessMap.height = darknessMapHeight = h;
             darknessMap.style.height = (h + 1) * tile_size + 'px';
             darknessMap.style.width = (w + 1)  * tile_size + 'px';
             darknessCtx.globalCompositeOperation = _globalCompositeOperation;
@@ -514,6 +515,37 @@
             darknessCtx.arc(x, y, r, 0, 360, false);
             darknessCtx.fill();
             darknessCtx.globalCompositeOperation = 'destination-out';
+        }
+
+        function isAreaLit (x, y, w, h) {
+            if (x < 0) x = 0;
+            if (y < 0) y = 0;
+            if (x + w >= darknessMapWidth) x = darknessMapWidth - 1, w = 1; 
+            if (y + h >= darknessMapHeight) y = darknessMapHeight - 1, h = 1; 
+            
+            var checkArea = darknessCtx.getImageData(x, y, w, h);
+            var data = checkArea.data;
+
+            var i = data.length;
+            var alpha;
+            while (i-- > 0) {
+                alpha = data[i + 3];
+
+                if (alpha < 128)
+                    return true;
+            }
+
+            return false;
+        }
+
+        function isTileLit (x, y) {
+            return isAreaLit(x, y, 1, 1);
+        }
+
+        function isPositionLit (x, y) {
+            x = ((x / tile_size) + 0.5) | 0
+            y = ((y / tile_size) + 0.5) | 0
+            return isTileLit(x, y)
         }
 
 		function point_camera(x, y) {

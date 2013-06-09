@@ -4,9 +4,25 @@
 	<script type="text/javascript" src="js/lib/crafty.js"></script>
 	<style>
 		#cr-stage {margin: 0 auto; box-shadow: 4px 4px 20px black;}
+
+        #darkness {
+            position: absolute;
+            z-index: 100000 !important;
+            width: 100%;
+            height: 100%;
+        }
+
+        #darkness-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
 	</style>
 </head>
 <body style="background: #26261a">
+    <div id="darkness-container">
+        <canvas id="darkness"></canvas>
+    </div>
 	<script type="text/javascript">
 
 		jQuery.reduce = function(arr, valueInitial, fnReduce)
@@ -351,12 +367,48 @@
 							//ugh, a special buffer floor that walls treat as wall.
 						   {id: 5, solid: false, name:"floor_x",   rgba: [50, 255, 255, 255]}]
 
+        var darknessMap = document.getElementById('darkness');
+        var darknessCtx = darknessMap.getContext('2d');
+        var _globalCompositeOperation
+        
+        darknessCtx.globalCompositeOperation = 'destination-out';
+        darknessCtx.fillStyle = 'rgba(0,0,0,1)';
+        
+        function resetDarknessMap (w, h) {
+            darknessMap.width = w;
+            darknessMap.height = h;
+
+            darknessCtx.globalCompositeOperation = _globalCompositeOperation;
+            darknessCtx.fillStyle = 'rgba(0,0,0,150)';
+            darknessCtx.clearRect(0, 0, w, h);
+            darknessCtx.globalAlpha = 0.9;
+            darknessCtx.fillRect(0, 0, w, h);
+            darknessCtx.fillStyle = 'rgba(0,0,0,255)';
+            darknessCtx.globalCompositeOperation = 'destination-out';
+        }
+
+        function lightTile (x, y) {
+            darknessCtx.fillRect(x, y, 1, 1);
+        }
+
+        function lightCircle (x, y, r) {
+            darknessCtx.beginPath();
+            darknessCtx.arc(x, y, r, 0, 360, false);
+            darknessCtx.fill();
+        }
+
         function load_level(level_id) {
 
             $.getJSON("data/levels/" + level_id + "/data.json", function (level_data) {
 
                 var level_x = level_data.map.x;
                 var level_y = level_data.map.y;
+
+                resetDarknessMap(level_x, level_y);
+                lightTile(5, 5)
+                lightTile(7, 6)
+                lightTile(8, 6)
+                lightCircle(10, 10, 2)
                 var map_data = [];
 
                 var img = new Image();
@@ -515,8 +567,7 @@
 
 	</script>
 
-    <canvas id="buffer" style="display:none;">
+    <canvas id="buffer" style="display:none;"></canvas>
 
-    </canvas>
 </body>
 </html>

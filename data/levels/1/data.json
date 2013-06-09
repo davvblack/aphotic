@@ -1,0 +1,28 @@
+{
+	"level_id": 1,
+	
+	"map":{
+		"x": 16,
+		"y": 8,
+		"img_name": "1/level.png"
+	},
+	
+	"entities": [
+		
+		{"type": "doorh", "location":[4,2], "state": false, "event": "switch1"},
+		{"type": "exit", "location":[14,0], "state": true, "event": "trigger1"},
+		{"type": "switch", "location":[1,0], "state": false, "event": "switch1"},
+		{"type": "switch", "location":[3,0], "state": false, "event": "switch2"},
+		{"type": "switch", "location":[2,5], "state": false, "event": "switch3"},
+		{"type": "switch", "location":[9,0], "state": false, "event": "switch4"},
+		{"type": "light", "location":[3,3], "state": true, "event": "none", "radius": 2},
+		{"type": "light", "location":[3,5], "state": false, "event": "switch2", "radius": 4},
+		{"type": "light", "location":[7,4], "state": false, "event": "switch3", "radius": 4},
+		{"type": "light", "location":[13,3], "state": false, "event": "switch4", "radius": 4}
+	],
+	
+	"unused": [
+		
+		{"type": "player", "location":[80,80], "controls":"LeftControls"}
+	]
+}

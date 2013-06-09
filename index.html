@@ -146,10 +146,10 @@
             Creature: function() {
                 //setup animations
                 this.requires("SpriteAnimation, Collision, Grid")
-                .animate("walk_left", 12, 2, 15)
-                .animate("walk_right", 8, 2, 11)
-                .animate("walk_up", 0, 2, 3)
-                .animate("walk_down", 4, 2, 7)
+                .animate("walk_left", 0, 5, 7)
+                .animate("walk_right", 0, 4, 7)
+                .animate("walk_up", 0, 2, 7)
+                .animate("walk_down", 0, 3, 7)
                 .bind("NewDirection",
                     function (direction) {
                         if (direction.x < 0) {

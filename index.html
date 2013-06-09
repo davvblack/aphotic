@@ -7,7 +7,7 @@
 	<script type="text/javascript">
 
         var tile_size = 80;
-		var tile_vertical_over = 20;
+		var tile_vertical_over = 40;
         var collision_fudge = 10;
 
 		Crafty.init(1000, 800);
@@ -171,7 +171,7 @@
                             }
                         }
                     }
-                    
+
                     var wall_names = ["walln", "wallr", "walll", "wallb"]
                     var block_name;
 
@@ -198,7 +198,7 @@
                                 }
 
                                 console.log(block_name);
-                                
+
                                 Crafty.e("2D, DOM, Collision, solid, " + block_name)
                                     .attr({ x: i * tile_size, y: j * tile_size, z:1 })
                                     .collision([collision_fudge, collision_fudge],
@@ -229,7 +229,7 @@
 						;
 
                 }
-				
+
 				Crafty.viewport.scroll('_x', 500-80);
 				Crafty.viewport.scroll('_y', 500-80);
 

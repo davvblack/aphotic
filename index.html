@@ -6,10 +6,15 @@
 <body style="background: #26261a">
 	<script type="text/javascript">
 
+	
+
         var tile_size = 80;
 		var tile_vertical_over = 40;
         var collision_fudge = 10;
-
+		var block_collisions = [[collision_fudge, collision_fudge + tile_vertical_over],
+							[tile_size-collision_fudge, collision_fudge + tile_vertical_over],
+							[tile_size-collision_fudge, tile_size-collision_fudge + tile_vertical_over],
+							[collision_fudge, tile_size-collision_fudge + tile_vertical_over]];
 		Crafty.init(1000, 800);
 
 		// YOUR GAME CODE
@@ -307,13 +312,10 @@
                                 if (block_name=='wallb') {
                                     block_name += (Number)(Math.random()<.9) || Crafty.math.randomInt(1,3);
                                 }
-
-                                Crafty.e("2D, DOM, Collision, solid, " + block_name)
-                                    .attr({ x: i * tile_size, y: j * tile_size - tile_vertical_over, z:j * tile_size - tile_vertical_over })
-                                    .collision([collision_fudge, collision_fudge + tile_vertical_over],
-                                               [tile_size-collision_fudge, collision_fudge + tile_vertical_over],
-                                               [tile_size-collision_fudge, tile_size-collision_fudge + tile_vertical_over],
-                                               [collision_fudge, tile_size-collision_fudge + tile_vertical_over]);
+								
+                                var that = Crafty.e("2D, DOM, Collision, solid, " + block_name)
+                                    .attr({ x: i * tile_size, y: j * tile_size - tile_vertical_over, z:j * tile_size - tile_vertical_over });
+                                    that.collision.apply(that, JSON.parse(JSON.stringify(block_collisions)));
                             } else {
                                 Crafty.e("2D, DOM, " + map_data[i][j].name.replace('_x',''))
                                     .attr({ x: i * tile_size, y: j * tile_size - tile_vertical_over, z:j * tile_size - tile_vertical_over });

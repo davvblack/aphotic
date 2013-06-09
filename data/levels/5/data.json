@@ -29,23 +29,21 @@
 
 		{"type": "switch", "location":[9,12], "state": false, "event": "switch1"},
 
-		{"type": "exit", "location":[2,8], "state": false, "event": "switch1", "exit_to": 5},	
+		{"type": "exit", "location":[8,12], "state": false, "event": "switch1", "exit_to": 6},	
 		
-		
+		{"type": "light", "location":[2,18], "state": true, "event": "none", "radius":2},
 
-		{"type": "light", "location":[5,15], "state": false, "event": "plate1", "radius":8},
-		{"type": "light", "location":[10,15], "state": false, "event": "plate2", "radius":5},
-		{"type": "light", "location":[15,15], "state": false, "event": "plate3", "radius":5},
+		{"type": "light", "location":[5,15], "state": false, "event": "plate1", "radius":6},
+		{"type": "light", "location":[10,15], "state": false, "event": "plate2", "radius":4},
+		{"type": "light", "location":[15,15], "state": false, "event": "plate3", "radius":4},
 
-		{"type": "light", "location":[5,10], "state": false, "event": "plate4", "radius":5},
-		{"type": "light", "location":[10,10], "state": false, "event": "plate5", "radius":5},
-		{"type": "light", "location":[15,10], "state": false, "event": "plate6", "radius":5},
+		{"type": "light", "location":[5,10], "state": false, "event": "plate4", "radius":4},
+		{"type": "light", "location":[10,10], "state": false, "event": "plate5", "radius":4},
+		{"type": "light", "location":[15,10], "state": false, "event": "plate6", "radius":4},
 
-		{"type": "light", "location":[5,5], "state": false, "event": "plate7", "radius":5},
-		{"type": "light", "location":[10,5], "state": false, "event": "plate8", "radius":5},
-		{"type": "light", "location":[15,5], "state": false, "event": "plate9", "radius":5},
-
-		
+		{"type": "light", "location":[5,5], "state": false, "event": "plate7", "radius":4},
+		{"type": "light", "location":[10,5], "state": false, "event": "plate8", "radius":4},
+		{"type": "light", "location":[15,5], "state": false, "event": "plate9", "radius":4}
 
 	]
 	

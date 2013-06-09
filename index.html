@@ -397,8 +397,8 @@
 		
 		Crafty.c('Light', {
 			Light: function(x, y, r, state, event_name) {
-				this.x = x;
-				this.y = y;
+				this.tileX = x;
+				this.tileY = y;
 				this.r = r;
 				this.state = state;
 				this.listen_to = event_name;
@@ -530,9 +530,9 @@
 			
 			for (var i=0; i<lights.length; i++) {
 				var light = Crafty(lights[i]);
-				console.log(light);
+				// console.log(light);
 				if (light.state) {
-					lightCircle(light.x, light.y, light.r);
+					lightCircle(light.tileX, light.tileY, light.r);
 				}
 			}
 			point_camera(global_level_data.camera_x, global_level_data.camera_y);
@@ -636,16 +636,21 @@
 							//console.log(this, from);
 						});
 
-                    var player2 = Crafty.e("2D, DOM, Creature, player, RightControls, solid")
+                    var player2 = Crafty.e("2D, DOM, Creature, player, RightControls, solid, Light")
+                        .Light(0, 0, 2, true)
                         .attr({ x: tile_size*1, y: tile_size*2, z: tile_size*2.5 })
                         .rightControls(6)
                         .Creature()
 						.bind('Moved', function(from) {
+                            // console.log('p2', this);
+                            this.tileX = (this._x / tile_size + this.r);
+                            this.tileY = (this._y / tile_size + this.r);
 						/*
 							Crafty.viewport.scroll('_x', 400-this._x);
 							Crafty.viewport.scroll('_y', 300-this._y);
                             positionDarknessMap(this._x, this._y);*/
 							point_camera(this._x, this._y);
+                            redraw_lights();
 							//console.log(this, from);
 						});
 						;

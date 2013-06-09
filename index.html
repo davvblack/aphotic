@@ -6,7 +6,14 @@
 <body style="background: #26261a">
 	<script type="text/javascript">
 
-	
+		jQuery.reduce = function(arr, valueInitial, fnReduce)
+		{
+			jQuery.each( arr, function(i, value)
+			{
+				valueInitial = fnReduce.apply(value, [valueInitial, i, value]);
+			});
+			return valueInitial;
+		}		
 
         var tile_size = 80;
 		var tile_vertical_over = 40;
@@ -117,12 +124,69 @@
 		};
 		
 		Crafty.c('Trigger', {
-            Trigger: function(event_name, state, things) {
-				this.state = state;
+            Trigger: function(bool_op, ins, out) {
+				this.state = out;
 				this.touching = false;
-				this.requires("SpriteAnimation, Collision, Grid")
-				.bind('EnterFrame', function() {
-				})
+				
+				this.states = {};
+				
+				var reducer;
+				var initial;
+				
+				var positive;
+				switch (bool_op) {
+					case "not": case "nor":
+						positive = false;
+						initial = false;
+						reducer = function (a, x, b) { return a || b; };
+						break;
+					//Doesn't really intialize right.
+					case "xnor":
+						positive = false;
+						initial = false;
+						reducer = function (a, x, b) { return a != b; };					
+						break;
+					case "or":
+						positive = true;
+						initial = false;
+						reducer = function (a, x, b) { return a || b; };					
+						break;
+					//Doesn't really intialize right.
+					case "xor":
+						positive = true;
+						initial = false;
+						reducer = function (a, x, b) { return a != b; };
+						break;
+					case "and":
+						positive = true;
+						initial = true;
+						reducer = function (a, x, b) { return a && b; };
+						break;
+					}
+				
+				
+				
+				for (input_id in ins) {
+					input = ins[input_id];
+					
+					this.states[input] = (positive == this.state);
+					
+					bind_trigger.call(this, input, initial, reducer);
+				}
+				
+				function bind_trigger(input) {
+					this.bind(input, function(state) {
+						this.states[input] = state;
+						var new_state = (positive == $.reduce(this.states, initial, reducer));
+						console.log(new_state, this.state, this.states, initial, reducer, $.reduce(this.states, initial, reducer));
+						if (new_state != this.state) {
+							this.state = new_state;
+							Crafty.trigger(out, this.state);
+							
+						}
+					})
+				}
+				
 				
 				return this;
             }
@@ -429,7 +493,7 @@
 								}
 								break;
 							case "trigger":
-								Crafty.e("Trigger").Trigger(entity.bool, entity.ins, entity.out);
+								Crafty.e("Trigger").Trigger(entity.bool, entity.ins, entity.out, entity.state);
 								break;
 						}
 						

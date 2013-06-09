@@ -123,7 +123,7 @@
                 this.requires('Multiway');
             },
 
-            leftControls: function(speed) {
+            Controls: function(speed) {
                 this.multiway(speed, {W: -90, S: 90, D: 0, A: 180})
                 return this;
             }
@@ -135,7 +135,7 @@
                 this.requires('Multiway');
             },
 
-            rightControls: function(speed) {
+            Controls: function(speed) {
                 this.multiway(speed, {UP_ARROW: -90, DOWN_ARROW: 90, RIGHT_ARROW: 0, LEFT_ARROW: 180})
                 return this;
             }
@@ -455,11 +455,6 @@
 			door_h: [10,0],
 			open_h: [11,1],
 			closed_h: [10,1],
-            /*
-            goal: [0, 1],
-            wall: [0, 2],
-            player: [0, 3],
-            enemy: [0, 3],*/
         });
 
         var tile_types = [ {id: 1, solid: false, name:"floor",   rgba: [255, 255, 255, 255]},
@@ -644,39 +639,7 @@
 
                         }
                     }
-                    var player1 = Crafty.e("2D, DOM, Creature, player, LeftControls, solid")
-                        .attr({ x: tile_size*1, y: tile_size*.5, z: tile_size*.5 })
-                        .leftControls(6)
-                        .Creature()
-						.bind('Moved', function(from) {
-							/*
-							Crafty.viewport.scroll('_x', 400-this._x);
-							Crafty.viewport.scroll('_y', 300-this._y);
-                            positionDarknessMap(this._x, this._y);
-							*/
-							point_camera(this._x, this._y);
-							//console.log(this, from);
-						});
-
-                    var player2 = Crafty.e("2D, DOM, Creature, player, RightControls, solid, Light")
-                        .Light(0, 0, 2, true)
-                        .attr({ x: tile_size*1, y: tile_size*2, z: tile_size*2.5 })
-                        .rightControls(6)
-                        .Creature()
-						.bind('Moved', function(from) {
-                            // console.log('p2', this);
-                            this.tileX = (this._x / tile_size + this.r);
-                            this.tileY = (this._y / tile_size + this.r);
-						/*
-							Crafty.viewport.scroll('_x', 400-this._x);
-							Crafty.viewport.scroll('_y', 300-this._y);
-                            positionDarknessMap(this._x, this._y);*/
-							point_camera(this._x, this._y);
-                            redraw_lights();
-							//console.log(this, from);
-						});
-						;
-
+					
 					for (var entity_id in level_data.entities) {
 						var entity = level_data.entities[entity_id];
 						console.log(entity);
@@ -686,6 +649,7 @@
 						
 						var under = { x: location[0], y: location[1], z: location[1] };
 						var over = { x: location[0], y: location[1], z: location[1] + tile_size - 1};
+						var middle = { x: location[0], y: location[1], z: location[1] + tile_size/2};
 						
 						switch (entity.type) {
 							case "switch":
@@ -733,8 +697,29 @@
 								break;
 							case "light":
 								Crafty.e("Light").Light(entity.location[0], entity.location[1], entity.radius, entity.state, entity.event)
+								break;
+							case "player":
+								console.log(entity.controls);
+								var char = Crafty.e("2D, DOM, Creature, player, solid, " + entity.controls + ", " + ((entity.light)?"Light":""))
+									.attr(middle)
+									.Controls(6)
+									.Creature()
+									.bind('Moved', function(from) {
+										point_camera(this._x, this._y);
+									});
+									
+								if (entity.light) {
+									char.Light(0, 0, 2, true)
+									.bind('Moved', function(from) {
+										this.tileX = (this._x / tile_size + this.r);
+										this.tileY = (this._y / tile_size + this.r);
+										redraw_lights();
+									});		
+								}
+								
 							
 						}
+
 						
 					}
 					

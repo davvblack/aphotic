@@ -9,20 +9,25 @@
 	
 	"entities": [
 		
-		{"type": "doorh", "location":[4,2], "state": false, "event": "switch1"},
-		{"type": "exit", "location":[14,0], "state": true, "event": "trigger1", "exit_to": 2},
-		{"type": "switch", "location":[1,0], "state": false, "event": "switch1"},
-		{"type": "switch", "location":[3,0], "state": false, "event": "switch2"},
-		{"type": "switch", "location":[2,5], "state": false, "event": "switch3"},
-		{"type": "switch", "location":[9,0], "state": false, "event": "switch4"},
-		{"type": "light", "location":[3,3], "state": true, "event": "none", "radius": 2},
-		{"type": "light", "location":[3,5], "state": true, "event": "switch2", "radius": 4},
-		{"type": "light", "location":[7,4], "state": true, "event": "switch3", "radius": 4},
-		{"type": "light", "location":[13,3], "state": true, "event": "switch4", "radius": 4}
+		{"type": "doorh", "location":[3,15], "state": false, "event": "switch1"},
+		{"type": "doorh", "location":[3,9], "state": false, "event": "switch5"},
+		{"type": "doorv", "location":[1,10], "state": false, "event": "trigger2"},
+		{"type": "exit", "location":[2,0], "state": false, "event": "switch5", "exit_to": 3},
+		{"type": "switch", "location":[1,18], "state": false, "event": "switch1"},
+		{"type": "switch", "location":[3,11], "state": false, "event": "switch2"},
+		{"type": "switch", "location":[4,11], "state": false, "event": "switch3"},
+		{"type": "switch", "location":[4,16], "state": false, "event": "switch4"},
+		{"type": "switch", "location":[2,5], "state": false, "event": "switch5"},
+		{"type": "light", "location":[4,13], "state": false, "event": "switch4", "radius": 4},
+		{"type": "light", "location":[3,19], "state": true, "event": "none", "radius": 4},
+		{"type": "light", "location":[3,10], "state": false, "event": "trigger1", "radius": 6},
+		{"type": "trigger", "state": false, "ins": ["switch2","switch3"], "out":"trigger1", "bool":"or"},
+		{"type": "trigger", "state": false, "ins": ["switch2","switch3"], "out":"trigger2", "bool":"and"},
+		{"type": "player", "location":[4,20], "controls":"RightControls"}
 	],
 	
 	"unused": [
 		
-		{"type": "player", "location":[80,80], "controls":"LeftControls"}
+		
 	]
 }

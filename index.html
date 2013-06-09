@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <head>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-	<script type="text/javascript" src="js/lib/crafty.js"></script>
+    <script type="text/javascript" src="js/lib/crafty.js"></script>
+	<script type="text/javascript" src="js/lib/soundeffectsmanager.js"></script>
 	<style>
 
         body {
@@ -68,6 +69,17 @@
 		var stage_height = 700;
 		var stage_width = 980;
 		
+        // use sfx.play(name) to play sound effect
+        var sfx = new SoundEffectManager()
+
+        var initSfx = function (path, name) {
+            sfx.loadFile(path, name);
+        }
+
+        initSfx('assets/sfx/open.wav', 'open')
+        initSfx('assets/sfx/step.wav', 'step')
+        initSfx('assets/sfx/switch.wav', 'switch')
+
         var tile_size = 80;
 		var tile_vertical_over = 40;
         var collision_fudge = 10;

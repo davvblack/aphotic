@@ -19,7 +19,6 @@
 		{"type": "light", "location":[3,5], "state": false, "event": "switch2", "radius": 4},
 		{"type": "light", "location":[7,4], "state": false, "event": "switch3", "radius": 4},
 		{"type": "light", "location":[13,3], "state": false, "event": "switch4", "radius": 4},
-		{"type": "player", "location":[2,2], "controls":"RightControls", "light": true},
-		{"type": "player", "location":[2,3], "controls":"LeftControls", "light": false}
+		{"type": "player", "location":[2,2], "controls":"RightControls", "primary":true},
 	]
 }

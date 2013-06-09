@@ -87,13 +87,16 @@
                         }
                 })
                 .bind('Moved', function(from) {
+					
                     if(this.hit('solid')){
                         this.attr({x: from.x, y:from.y});
-                    }
-                }).collision([20, 30],
-							[tile_size - 20, 30],
-							[tile_size - 20, tile_size + 35],
-							[20, tile_size + 35])
+                    } else {
+						this.attr({z: this._y + 68});
+					}
+                }).collision([20, 70],
+							[tile_size - 20, 70],
+							[tile_size - 20, tile_size + 40],
+							[20, tile_size + 40])
                 /*
                 .onHit("fire", function() {
                     this.destroy();
@@ -104,6 +107,104 @@
             }
         });
 
+		function tile_to_coords(x,y) {
+			return [x * tile_size, y * tile_size - tile_vertical_over]
+		};
+		
+		Crafty.c('Switch', {
+            Switch: function() {
+				this.requires("SpriteAnimation, Collision, Grid")
+				.bind('EnterFrame', function() {
+					//console.log('millions!');
+				});
+				
+				return this;
+            }
+        });
+
+		Crafty.c('Plate', {
+            Plate: function(event_name, state) {
+				this.state = state;
+				this.requires("SpriteAnimation, Collision, Grid")
+				.bind('EnterFrame', function() {
+					if (this.hit('player')) {
+						if (!this.state) {
+							this.state = true;
+							this.removeComponent("plate_off");
+							this.addComponent("plate_on");
+							Crafty.trigger(event_name, this.state);
+							console.log(event_name, this.state);
+						}
+					} else {
+						if (this.state) {
+							this.state = false;
+							this.removeComponent("plate_on");
+							this.addComponent("plate_off");
+							Crafty.trigger(event_name, this.state);
+							console.log(event_name, this.state);
+						}
+					}
+				});
+				
+				return this;
+            }
+        });
+		
+		Crafty.c('Door_v', {
+            Door_v: function(event_name, state) {
+				
+				this.state = state;
+				this.listen_to = event_name;
+				this.requires("SpriteAnimation, Collision, Grid")
+				.bind(this.listen_to, function(new_state) {
+					if (new_state) {
+						if (!this.state) {
+							this.state = true;
+							this.removeComponent("closed_v");
+							this.addComponent("open_v");
+							this.removeComponent("solid");
+						}
+					} else {
+						if (this.state) {
+							this.state = false;
+							this.removeComponent("open_v");
+							this.addComponent("closed_v");
+							this.addComponent("solid");
+						}
+					}
+				});
+				
+				return this;
+            }
+        });
+		
+		Crafty.c('Door_h', {
+            Door_h: function(event_name, state) {
+				this.state = state;
+				this.listen_to = event_name;
+				console.log(event_name, state);
+				this.requires("SpriteAnimation, Collision, Grid")
+				.bind(this.listen_to, function(new_state) {
+					if (new_state) {
+						if (!this.state) {
+							this.state = true;
+							this.removeComponent("closed_h");
+							this.addComponent("open_h");
+							this.removeComponent("solid");
+						}
+					} else {
+						if (this.state) {
+							this.state = false;
+							this.removeComponent("open_h");
+							this.addComponent("closed_h");
+							this.addComponent("solid");
+						}
+					}
+				});
+				
+				return this;
+            }
+        });
 
         Crafty.scene("main", function () {
             load_level(1);
@@ -121,6 +222,15 @@
             wallb1: [4, 0],
             wallb2: [5, 0],
             wallb3: [6, 0],
+			plate_on: [6, 1],
+			plate_off: [5, 1],
+			door_v: [8,0],
+			exit_v: [9,0],
+			open_v: [9,1],
+			closed_v: [8,1],
+			door_h: [10,0],
+			open_h: [11,1],
+			closed_h: [10,1],
             /*
             goal: [0, 1],
             wall: [0, 2],
@@ -130,8 +240,10 @@
 
         var tile_types = [ {id: 1, solid: false, name:"floor",   rgba: [255, 255, 255, 255]},
                            {id: 2, solid: true, name:"wall",    rgba: [  0,   0,   0, 255]},
-                           {id: 2, solid: false, name:"player",    rgba: [  255,   0,   0, 255]},
-                           {id: 2, solid: false, name:"goal",    rgba: [  0,   255,   0, 255]}]
+                           {id: 3, solid: false, name:"player",    rgba: [  255,   0,   0, 255]},
+                           {id: 4, solid: false, name:"goal",    rgba: [  0,   255,   0, 255]},
+							//ugh, a special buffer floor that walls treat as wall.
+						   {id: 5, solid: false, name:"floor_x",   rgba: [50, 255, 255, 255]}]
 
         function load_level(level_id) {
 
@@ -177,15 +289,14 @@
 
                     for (var i = 0; i < level_x; i++) {
                         for (var j = 0; j < level_y; j++) {
-                            console.log(i, j, map_data[i][j]);
                             if (map_data[i][j].solid) {
-                                if (map_data[i][j].name == "wall") {
+                                if (map_data[i][j].name == "wall" ) {
                                     var blocked_right = false;
                                     var blocked_left = false;
-                                    if (map_data[i + 1] && (map_data[i + 1][j].name == "wall")) {
+                                    if (map_data[i + 1] && ((map_data[i + 1][j].name == "wall" || map_data[i + 1][j].name == "floor_x"))) {
                                         blocked_right = true;
                                     }
-                                    if (map_data[i - 1] && (map_data[i - 1][j].name == "wall")) {
+                                    if (map_data[i - 1] && ((map_data[i - 1][j].name == "wall" || map_data[i - 1][j].name == "floor_x"))) {
                                         blocked_left = true;
                                     }
                                     block_name = wall_names[blocked_right + 2*blocked_left]
@@ -197,24 +308,22 @@
                                     block_name += (Number)(Math.random()<.9) || Crafty.math.randomInt(1,3);
                                 }
 
-                                console.log(block_name);
-
                                 Crafty.e("2D, DOM, Collision, solid, " + block_name)
-                                    .attr({ x: i * tile_size, y: j * tile_size, z:1 })
-                                    .collision([collision_fudge, collision_fudge],
-                                               [tile_size-collision_fudge, collision_fudge],
-                                               [tile_size-collision_fudge, tile_size-collision_fudge],
-                                               [collision_fudge, tile_size-collision_fudge]);
+                                    .attr({ x: i * tile_size, y: j * tile_size - tile_vertical_over, z:j * tile_size - tile_vertical_over })
+                                    .collision([collision_fudge, collision_fudge + tile_vertical_over],
+                                               [tile_size-collision_fudge, collision_fudge + tile_vertical_over],
+                                               [tile_size-collision_fudge, tile_size-collision_fudge + tile_vertical_over],
+                                               [collision_fudge, tile_size-collision_fudge + tile_vertical_over]);
                             } else {
-                                Crafty.e("2D, DOM, " + map_data[i][j].name)
-                                    .attr({ x: i * tile_size, y: j * tile_size, z:1 });
+                                Crafty.e("2D, DOM, " + map_data[i][j].name.replace('_x',''))
+                                    .attr({ x: i * tile_size, y: j * tile_size - tile_vertical_over, z:j * tile_size - tile_vertical_over });
                             }
 
                         }
                     }
-                    var player1 = Crafty.e("2D, DOM, Creature, player, LeftControls, BombDropper, solid")
-                        .attr({ x: tile_size*1, y: tile_size*1, z: 3 })
-                        .leftControls(3)
+                    var player1 = Crafty.e("2D, DOM, Creature, player, LeftControls, solid")
+                        .attr({ x: tile_size*1, y: tile_size*.5, z: tile_size*.5 })
+                        .leftControls(6)
                         .Creature()
 						.bind('Moved', function(from) {
 							Crafty.viewport.scroll('_x', 500-this._x);
@@ -222,12 +331,63 @@
 							//console.log(this, from);
 						});
 
-                    var player2 = Crafty.e("2D, DOM, Creature, player, RightControls, BombDropper, solid")
-                        .attr({ x: tile_size*2, y: tile_size*1, z: 3 })
-                        .rightControls(3)
+                    var player2 = Crafty.e("2D, DOM, Creature, player, RightControls, solid")
+                        .attr({ x: tile_size*1, y: tile_size*2, z: tile_size*2 })
+                        .rightControls(6)
                         .Creature()
 						;
 
+					for (var entity_id in level_data.entities) {
+						var entity = level_data.entities[entity_id];
+						console.log(entity);
+						var location = tile_to_coords(entity.location[0], entity.location[1]);
+						
+						var under = { x: location[0], y: location[1], z: location[1] };
+						var over = { x: location[0], y: location[1], z: location[1] + tile_size - 1};
+						
+						switch (entity.type) {
+							case "switch":
+								Crafty.e("2D, DOM, door_h").attr(under);
+								break;
+							case "lever":
+							
+								break;
+							case "plate":
+								if (entity.state) {
+									Crafty.e("2D, DOM, plate_on, Plate").attr(under).Plate(entity.event, entity.state);
+								} else {
+									Crafty.e("2D, DOM, plate_off, Plate").attr(under).Plate(entity.event, entity.state);
+								}
+								break;
+							case "doorh":
+								Crafty.e("2D, DOM, door_h").attr(under);
+								if (entity.state) {
+									Crafty.e("2D, DOM, open_h, Door_h").attr(over).Door_h(entity.event, entity.state);
+								} else {
+									Crafty.e("2D, DOM, closed_h, solid, Door_h").attr(over).Door_h(entity.event, entity.state);
+								}
+								break;
+							case "exit":
+								Crafty.e("2D, DOM, exit_v").attr(under);
+								if (entity.state) {
+									Crafty.e("2D, DOM, open_v, Door_v").attr(over).Door_v(entity.event, entity.state);
+								} else {
+									Crafty.e("2D, DOM, closed_v, solid, Door_v").attr(over).Door_v(entity.event, entity.state);
+								}
+								break;
+							case "doorv":
+								Crafty.e("2D, DOM, door_v").attr(under);
+								if (entity.state) {
+									Crafty.e("2D, DOM, open_v, Door_v").attr(over).Door_v(entity.event, entity.state);
+								} else {
+									Crafty.e("2D, DOM, closed_v, solid, Door_v").attr(over).Door_v(entity.event, entity.state);
+								}
+								break;
+						}
+						
+					}
+					
+					
                 }
 
 				Crafty.viewport.scroll('_x', 500-80);

@@ -2,6 +2,9 @@
 <head>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 	<script type="text/javascript" src="js/lib/crafty.js"></script>
+	<style>
+		#cr-stage {margin: 0 auto; box-shadow: 4px 4px 20px black;}
+	</style>
 </head>
 <body style="background: #26261a">
 	<script type="text/javascript">
@@ -22,9 +25,8 @@
 							[tile_size-collision_fudge, collision_fudge + tile_vertical_over],
 							[tile_size-collision_fudge, tile_size-collision_fudge + tile_vertical_over],
 							[collision_fudge, tile_size-collision_fudge + tile_vertical_over]];
-		Crafty.init(1000, 800);
-
-		// YOUR GAME CODE
+		
+		Crafty.init(1600, 1000);
 
         Crafty.scene("loading", function () {
             //load takes an array of assets and a callback when complete

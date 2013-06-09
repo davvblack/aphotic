@@ -1,0 +1,29 @@
+{
+	"map":{
+		"x": 20,
+		"y": 20,
+		"img_name": "1/level.png"
+	},
+	
+	"entities": [
+		
+		{"type": "plate", "location":[6,1], "state": false, "event": "plate1"},
+		{"type": "plate", "location":[13,2], "state": false, "event": "plate2"},
+		{"type": "doorh", "location":[7,6], "state": false, "event": "trigger9"},
+		{"type": "doorv", "location":[17,5], "state": false, "event": "trigger1"},
+		{"type": "exit", "location":[18,1], "state": true, "event": "trigger1"},
+		{"type": "switch", "location":[16,0], "state": false, "event": "switch2"},
+		{"type": "switch", "location":[1,0], "state": false, "event": "switch1"},
+		{"type": "light", "location":[3,3], "state": true, "event": "trigger2", "radius": 2},
+		{"type": "light", "location":[7,6], "state": true, "event": "none", "radius": 6},
+		{"type": "light", "location":[16,0], "state": false, "event": "switch2", "radius": 6},
+		{"type": "trigger", "state": false, "out": "trigger1", "ins": ["switch2","plate2"], "bool":"or"},
+		{"type": "trigger", "state": true, "out": "trigger2", "ins": ["switch1"], "bool":"not"},
+		{"type": "trigger", "state": false, "out": "trigger9", "ins": ["switch1","plate1"], "bool":"and"}
+	],
+	
+	"unused": [
+		
+		{"type": "player", "location":[80,80], "controls":"LeftControls"}
+	]
+}

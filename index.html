@@ -107,6 +107,14 @@
 		Crafty.scene("main", function () {
             load_level(1);
         });
+		
+		Crafty.scene("2", function () {
+            load_level(2);
+        });
+		
+		Crafty.scene("3", function () {
+            load_level(3);
+        });
 
         Crafty.scene("loading");
 
@@ -411,7 +419,21 @@
 				return this;
 			}
 		})
-
+		
+		Crafty.c('Exit', {
+			Exit: function(exit_to) {
+				this.exit_to = exit_to;
+				this.requires("SpriteAnimation, Collision, Grid")
+				.bind('EnterFrame', function() {
+					if (this.hit('player')) {
+						Crafty.scene(this.exit_to);
+						//load_level(this.exit_to);
+					}
+				});
+				return this;
+			}
+		})
+		
         Crafty.sprite(tile_size, tile_size+tile_vertical_over, "assets/map_sprite.png", {
             floor: [0, 1],
             player: [0, 2],
@@ -723,7 +745,7 @@
 								}
 								break;
 							case "exit":
-								Crafty.e("2D, DOM, exit_v").attr(under);
+								Crafty.e("2D, DOM, exit_v, Exit").attr(under).Exit(entity.exit_to);
 								if (entity.state) {
 									Crafty.e("2D, DOM, open_v, Door_v").attr(over).Door_v(entity.event, entity.state);
 								} else {

@@ -1,10 +1,10 @@
 {
-	"level_id": 1,
+	"level_id": 2,
 	
 	"map":{
-		"x": 16,
-		"y": 8,
-		"img_name": "1/level.png"
+		"x": 6,
+		"y": 22,
+		"img_name": "2/level.png"
 	},
 	
 	"entities": [
@@ -16,9 +16,9 @@
 		{"type": "switch", "location":[2,5], "state": false, "event": "switch3"},
 		{"type": "switch", "location":[9,0], "state": false, "event": "switch4"},
 		{"type": "light", "location":[3,3], "state": true, "event": "none", "radius": 2},
-		{"type": "light", "location":[3,5], "state": false, "event": "switch2", "radius": 4},
-		{"type": "light", "location":[7,4], "state": false, "event": "switch3", "radius": 4},
-		{"type": "light", "location":[13,3], "state": false, "event": "switch4", "radius": 4}
+		{"type": "light", "location":[3,5], "state": true, "event": "switch2", "radius": 4},
+		{"type": "light", "location":[7,4], "state": true, "event": "switch3", "radius": 4},
+		{"type": "light", "location":[13,3], "state": true, "event": "switch4", "radius": 4}
 	],
 	
 	"unused": [

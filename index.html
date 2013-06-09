@@ -60,6 +60,14 @@
 
         });
 
+        function swapReelsWithoutPausing (reel_id) {
+            this._frame.currentReel = this._reels[reel_id],
+            pos = this._frame.currentReel[0];
+            this.__coord[0] = pos[0];
+            this.__coord[1] = pos[1];
+            this.updateSprite();
+            // this.bind("EnterFrame", this.updateSprite);
+        }
 
         Crafty.c('Creature', {
             Creature: function() {
@@ -73,19 +81,31 @@
                     function (direction) {
                         if (direction.x < 0) {
                             if (!this.isPlaying("walk_left"))
-                                this.stop().animate("walk_left", 30, -1);
+                                if (this._frame !== null)
+                                    swapReelsWithoutPausing.call(this, 'walk_left');
+                                else
+                                    this.animate("walk_left", 30, -1);
                         }
-                        if (direction.x > 0) {
+                        else if (direction.x > 0) {
                             if (!this.isPlaying("walk_right"))
-                                this.stop().animate("walk_right", 30, -1);
+                                if (this._frame !== null)
+                                    swapReelsWithoutPausing.call(this, 'walk_right');
+                                else
+                                    this.animate("walk_right", 30, -1);
                         }
-                        if (direction.y < 0) {
+                        else if (direction.y < 0) {
                             if (!this.isPlaying("walk_up"))
-                                this.stop().animate("walk_up", 30, -1);
+                                if (this._frame !== null)
+                                    swapReelsWithoutPausing.call(this, 'walk_up');
+                                else
+                                    this.animate("walk_up", 30, -1);
                         }
-                        if (direction.y > 0) {
+                        else if (direction.y > 0) {
                             if (!this.isPlaying("walk_down"))
-                                this.stop().animate("walk_down", 30, -1);
+                                if (this._frame !== null)
+                                    swapReelsWithoutPausing.call(this, 'walk_down');
+                                else
+                                    this.animate("walk_down", 30, -1);
                         }
                         if(!direction.x && !direction.y) {
                             this.stop();

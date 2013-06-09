@@ -26,24 +26,27 @@
 							[tile_size-collision_fudge, tile_size-collision_fudge + tile_vertical_over],
 							[collision_fudge, tile_size-collision_fudge + tile_vertical_over]];
 		
-		Crafty.init(1600, 1000);
+		Crafty.init(980, 700);
 
         Crafty.scene("loading", function () {
             //load takes an array of assets and a callback when complete
-            Crafty.load(["bananabomber-sprites.png"], function () {
+            Crafty.load(["bananabomber-sprites.png", "assets/src/map_sprite_2x.psd"], function () {
                 Crafty.scene("main"); //when everything is loaded, run the main scene
             });
 
-            /*
-            //black background with some loading text
-            Crafty.background("#000");
+            
             Crafty.e("2D, DOM, Text").attr({ w: 100, h: 20, x: 150, y: 120 })
                     .text("Loading")
                     .css({ "text-align": "center" });
 
-            */
+            
         });
 
+		Crafty.scene("main", function () {
+            load_level(1);
+        });
+
+        Crafty.scene("loading");
 
         Crafty.c("LeftControls", {
             init: function() {
@@ -309,12 +312,6 @@
 				return this;
             }
         });
-
-        Crafty.scene("main", function () {
-            load_level(1);
-        });
-
-        Crafty.scene("loading");
 
         Crafty.sprite(tile_size, tile_size+tile_vertical_over, "assets/map_sprite.png", {
             floor: [0, 1],

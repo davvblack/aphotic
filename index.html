@@ -446,7 +446,9 @@
 					for (var entity_id in level_data.entities) {
 						var entity = level_data.entities[entity_id];
 						console.log(entity);
-						var location = tile_to_coords(entity.location[0], entity.location[1]);
+						if (entity.location) {
+							var location = tile_to_coords(entity.location[0], entity.location[1]);
+						}
 						
 						var under = { x: location[0], y: location[1], z: location[1] };
 						var over = { x: location[0], y: location[1], z: location[1] + tile_size - 1};

@@ -9,7 +9,7 @@
 	
 	"entities": [
 		
-		{"type": "doorh", "location":[3,15], "state": false, "event": "switch1"},
+		{"type": "doorh", "location":[3,14], "state": false, "event": "switch1"},
 		{"type": "doorh", "location":[3,9], "state": false, "event": "switch5"},
 		{"type": "doorv", "location":[1,10], "state": false, "event": "trigger2"},
 		{"type": "exit", "location":[2,0], "state": false, "event": "switch5", "exit_to": 3},

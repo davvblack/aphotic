@@ -312,17 +312,18 @@
 					if (this.hit('player')) {
 						if (!this.touching) {
 							this.touching = true;
-							if (!this.state) {
-								this.state = true;
-								this.removeComponent("switch_off");
-								this.addComponent("switch_on");
-								Crafty.trigger(event_name, this.state);
-								console.log(event_name, this.state);
-							} else {
-								this.state = false;
-								this.addComponent("switch_off");
-								this.removeComponent("switch_on");
-								Crafty.trigger(event_name, this.state);
+                            sfx.play('step');
+                            if (!this.state) {
+                                this.state = true;
+                                this.removeComponent("switch_off");
+                                this.addComponent("switch_on");
+                                Crafty.trigger(event_name, this.state);
+                                console.log(event_name, this.state);
+                            } else {
+                                this.state = false;
+                                this.addComponent("switch_off");
+                                this.removeComponent("switch_on");
+                                Crafty.trigger(event_name, this.state);
 								console.log(event_name, this.state);
 							}
 						}
@@ -439,6 +440,7 @@
 		Crafty.c('Exit', {
 			Exit: function(exit_to) {
 				this.exit_to = exit_to;
+                sfx.play('open');
 				this.requires("SpriteAnimation, Collision, Grid")
 				.bind('EnterFrame', function() {
 					if (this.hit('player')) {
@@ -705,7 +707,8 @@
 									Crafty.e("2D, DOM, switch_on, Switch").attr(under).Switch(entity.event, entity.state);
 								} else {
 									Crafty.e("2D, DOM, switch_off, Switch").attr(under).Switch(entity.event, entity.state);
-								}								break;
+								}								
+                                break;
 							case "lever":
 							
 								break;
